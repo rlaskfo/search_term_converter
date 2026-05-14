@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>검색 실패어 분석 데모</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"
+    />
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <main class="wrap">
+      <header class="hero">
+        <h1>검색 실패어 분석 데모</h1>
+        <p class="lead">
+          GitHub Pages 정적 배포용 · 단건 GPT 분석 · 파일(xls/xlsx/csv)은 브라우저에서 파싱합니다. 4행에
+          <strong>검색어</strong> 헤더, 5행부터 최대 500행 처리.
+        </p>
+      </header>
+
+      <section class="panel panel--accent" aria-labelledby="api-title">
+        <h2 id="api-title">OpenAI 연결</h2>
+        <p class="hint">
+          OpenAI는 브라우저 직접 호출 시 <strong>CORS</strong>로 막힐 수 있습니다. 막히면 베이스 URL에 CORS를 허용한
+          프록시(예: Cloudflare Workers)를 넣고, 그 주소가 <code>/v1/chat/completions</code>까지 OpenAI와 동일하게
+          포워딩하도록 설정하세요.
+        </p>
+        <div class="grid2">
+          <label class="field">
+            <span>API 베이스 URL</span>
+            <input type="url" id="apiBase" placeholder="https://api.openai.com/v1" autocomplete="off" />
+          </label>
+          <label class="field">
+            <span>모델</span>
+            <input type="text" id="apiModel" value="gpt-4o-mini" autocomplete="off" />
+          </label>
+        </div>
+        <label class="field">
+          <span>OpenAI API Key</span>
+          <input type="password" id="apiKey" placeholder="sk-..." autocomplete="off" />
+        </label>
+        <label class="check"><input type="checkbox" id="rememberKey" /> 이 브라우저에 키 저장(로컬 스토리지)</label>
+      </section>
+
+      <section class="panel">
+        <h2>단건 분석</h2>
+        <div class="row">
+          <input type="text" id="singleKeyword" placeholder="검색어 입력" />
+          <button type="button" id="btnSingle" class="btn btn--primary">분석</button>
+        </div>
+        <div id="singleResult" class="table-wrap hidden" aria-live="polite"></div>
+      </section>
+
+      <section class="panel">
+        <h2>파일 일괄 분석</h2>
+        <p class="muted small">CSV는 UTF-8 권장(한글). xls/xlsx/csv · SheetJS CDN 사용.</p>
+        <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" />
+        <p id="parseError" class="error hidden" role="alert"></p>
+        <div id="batchControls" class="hidden">
+          <p id="batchMeta" class="muted small"></p>
+          <div class="btn-row">
+            <button type="button" id="btnBatchStart" class="btn btn--primary">일괄 분석 시작 / 이어서</button>
+            <button type="button" id="btnPause" class="btn" disabled>일시정지</button>
+            <button type="button" id="btnResume" class="btn">재개</button>
+            <button type="button" id="btnAbort" class="btn" disabled>중단</button>
+            <button type="button" id="btnReset" class="btn">진행 초기화</button>
+            <button type="button" id="btnDownload" class="btn btn--ok">엑셀 저장·다운로드</button>
+          </div>
+          <details class="details">
+            <summary>시트 미리보기 (4행부터)</summary>
+            <div id="preview" class="table-wrap"></div>
+          </details>
+        </div>
+        <div id="batchPreview" class="table-wrap hidden"></div>
+      </section>
+    </main>
+
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
+    <script type="module" src="js/app.js"></script>
+  </body>
+</html>
